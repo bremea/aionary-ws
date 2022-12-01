@@ -1,2 +1,4 @@
-node_modules
-.idea
+# flyctl launch added from .gitignore
+**/node_modules
+**/.idea
+**/git

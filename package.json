@@ -1,26 +1,37 @@
 {
-  "name": "docker-node-typescript",
-  "version": "1.0.2",
-  "description": "A starter project to quickly build NodeJS apps using Docker and Typescript, with best practices in mind",
-  "scripts": {
-    "build": "gulp copy; gulp watch & tsc-watch -p . --onSuccess \"node dist/index.js\"",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": ["docker", "node", "typescript", "starter", "docker node typescript", "docker node", "docker typescript"],
-  "author": "Stephen Gardner (opensourceaugie@gmail.com)",
-  "license": "ISC",
-  "homepage": "https://github.com/stephengardner/docker-node-typescript",
-  "dependencies": {
-    "express": "^4.10.2",
-    "gulp": "^3.9.1",
-    "socket.io": "^1.2.0"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/stephengardner/docker-node-typescript"
-  },
-  "devDependencies": {
-    "@types/express": "^4.11.0",
-    "@types/node": "^8.5.8"
-  }
+	"name": "aionary-gamews",
+	"version": "1.0.0",
+	"type": "module",
+	"description": "AIonary game server (socket.io)",
+	"scripts": {
+		"build": "tsc",
+		"start": "node ./dist"
+	},
+	"keywords": [
+		"docker",
+		"node",
+		"typescript",
+		"starter",
+		"docker node typescript",
+		"docker node",
+		"docker typescript"
+	],
+	"author": "bremea (bremeagames@gmail.com)",
+	"license": "ISC",
+	"dependencies": {
+		"@aws-sdk/client-s3": "^3.216.0",
+		"centra": "^2.6.0",
+		"ioredis": "^5.2.4",
+		"jose": "^4.11.1",
+		"uuid": "^9.0.0",
+		"ws": "^8.11.0"
+	},
+	"devDependencies": {
+		"@types/node": "^18.11.9",
+		"@types/ws": "^8.5.3",
+		"dotenv": "^16.0.3",
+		"nodemon": "^2.0.15",
+		"ts-node": "^10.5.0",
+		"typescript": "^4.5.5"
+	}
 }

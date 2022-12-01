@@ -1,49 +1,37 @@
-# Specify the image that this app is going to be built from.  This is a docker hub hosted Node image
-	FROM node:8
+FROM debian:bullseye as builder
 
-# Specify the username this app is going to run in
-	ENV USER=app
+ARG NODE_VERSION=16.18.1
+ARG YARN_VERSION=1.22.19
 
-# Specify the subdirectory (/home/user/sub_dir_here) that this app will run in
-	ENV SUBDIR=appDir
+RUN apt-get update; apt install -y curl
+RUN curl https://get.volta.sh | bash
+ENV VOLTA_HOME /root/.volta
+ENV PATH /root/.volta/bin:$PATH
+RUN volta install node@${NODE_VERSION} yarn@${YARN_VERSION}
 
-# Create a user named $USER.  Run npm install as root before doing other commands
-	RUN useradd --user-group --create-home --shell /bin/false $USER &&\
-		npm install --global tsc-watch npm ntypescript typescript gulp-cli concurrently
+#######################################################################
 
-# The default directory created for a user in node is /home/user_name
-	ENV HOME=/home/$USER
+RUN mkdir /app
+WORKDIR /app
 
-# Copy package.json and the gulpfile as root into the subdir where our app lies
-	COPY package.json gulpfile.js tsconfig.json $HOME/$SUBDIR/
+# Yarn will not install any package listed in "devDependencies" when NODE_ENV is set to "production"
+# to install all modules: "yarn install --production=false"
+# Ref: https://classic.yarnpkg.com/lang/en/docs/cli/install/#toc-yarn-install-production-true-false
 
-# set the $USER as the owner of the $HOME directory.  Necessary after copying the files from the line above
-	RUN chown -R $USER:$USER $HOME/*
+ENV NODE_ENV production
 
-# Change user to $USER
-	USER $USER
+COPY . .
 
-# Change directory to the specified subdirectory
-	WORKDIR $HOME/$SUBDIR
+RUN yarn install --production=false && yarn run build
+FROM debian:bullseye
 
-# As this user, finally run NPM install
-	RUN npm install
+LABEL fly_launch_runtime="nodejs"
 
-## These lines are not necessary because we're creating a volume from the docker-compose.yml file.
-## If we were to not use a volume there, these would be necessary
+COPY --from=builder /root/.volta /root/.volta
+COPY --from=builder /app /app
 
-# Change the user to root to finalize some commands
-#	USER root
+WORKDIR /app
+ENV NODE_ENV production
+ENV PATH /root/.volta/bin:$PATH
 
-# Copy our working directory from the host machine (your machine) into the Docker container
-# Not necessary since gulp is taking care of this for us
-#   COPY . $HOME/$SUBDIR
-
-# Copying has copied as the root user, so set the owner once again to our specified username
-#	RUN chown -R $USER:$USER $HOME/**/*
-
-# Finally, switch back to the non root user and run the final command
-#	USER $USER
-
-# Kick node off from the compiled dist folder, which is compiled from our simple gulpfile
-	CMD ["node", "dist/index.js"]
+CMD [ "yarn", "run", "start" ]

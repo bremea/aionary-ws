@@ -1,3 +1,7 @@
 node_modules
 .idea
 git
+.env
+dist
+dist/*
+.DS_Store
