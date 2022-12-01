@@ -67,7 +67,6 @@ wss.on("connection", (ws) => {
             `${process.env.FLY_ALLOC_ID}:plpts`,
             cinfo.uuid as string
           );
-          console.log(pts);
           const newHm = {};
           newHm[uuid] = pts;
           const newNm = {};

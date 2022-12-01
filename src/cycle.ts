@@ -168,7 +168,7 @@ const cycle = async (wss: WebSocketServer, round: number) => {
       })
     );
   });
-  await wait(10 * 1000);
+  await wait(5 * 1000);
 
   if (round > 5 && players == 0) {
     if (process.env.PUBLIC_GAME == "true") {
